@@ -885,13 +885,30 @@ app.get("/labs", (req, res) => {
    SQL INJECTION LAB
 ========================= */
 
-app.get("/labs/database", (req, res) => {
+app.post("/labs/database", (req, res) => {
 
-    const category = req.query.category || "Gifts";
+    let category = req.body.category || "Gifts";
+
+    /*
+        The browser sends the category encoded.
+        The server decodes it before executing
+        the intentionally vulnerable SQL query.
+    */
+
+    if (req.body.encoded === "true") {
+        try {
+            category = Buffer
+                .from(category, "base64")
+                .toString("utf8");
+        } catch (error) {
+            category = "Gifts";
+        }
+    }
 
     /*
         INTENTIONALLY VULNERABLE LAB
-        The parameter is deliberately inserted
+
+        The decoded parameter is deliberately inserted
         into the SQL query without parameterization.
     */
 
@@ -1136,18 +1153,19 @@ app.get("/labs/database", (req, res) => {
         <div class="target-url">
 
             <span>
-                GET
+                POST
             </span>
 
             <code>
-                /labs/database?category=Gifts
+                /labs/database
             </code>
 
         </div>
 
 
         <form
-            method="GET"
+            id="sqli-form"
+            method="POST"
             action="/labs/database"
             class="attack-form"
         >
@@ -1388,7 +1406,7 @@ app.get("/labs/database", (req, res) => {
         </div>
 
 
-        <pre><span class="code-keyword">const</span> category = req.query.category || <span class="code-string">"Gifts"</span>;
+        <pre><span class="code-keyword">const</span> category = decodedCategory || <span class="code-string">"Gifts"</span>;
 
 <span class="code-keyword">const</span> query = <span class="code-string">\`
     SELECT *
@@ -1417,9 +1435,98 @@ app.get("/labs/database", (req, res) => {
 
 </section>
 
+
+<script>
+
+const form = document.getElementById("sqli-form");
+
+form.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const input = document.getElementById("category");
+
+    const value = input.value;
+
+    const encoded = btoa(
+        unescape(
+            encodeURIComponent(value)
+        )
+    );
+
+    const formData = new URLSearchParams();
+
+    formData.append("category", encoded);
+    formData.append("encoded", "true");
+
+    fetch("/labs/database", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: formData.toString()
+    })
+    .then(response => response.text())
+    .then(html => {
+
+        document.open();
+        document.write(html);
+        document.close();
+
+    })
+    .catch(error => {
+
+        console.error(error);
+
+    });
+
+});
+
+</script>
+
 `));
 
     });
+
+});
+
+
+/* =========================
+   GET SQLi PAGE
+========================= */
+
+app.get("/labs/database", (req, res) => {
+
+    res.send(page("SQL Injection Lab", `
+
+<section class="error-page">
+
+    <span class="error-code">
+        SQLi
+    </span>
+
+
+    <h1>
+        SQL Injection Lab
+    </h1>
+
+
+    <p>
+        Open the laboratory from the Labs section
+        and submit your test through the lab interface.
+    </p>
+
+
+    <a
+        href="/labs"
+        class="btn btn-primary"
+    >
+        BACK TO LABS
+    </a>
+
+</section>
+
+`));
 
 });
 
@@ -1671,7 +1778,12 @@ app.get("/writeups", (req, res) => {
 
 <section class="writeup-list">
 
-    <article class="writeup-card">
+    <a
+        href="https://github.com/yusifalquliyev/YusifSecLab/blob/master/writeups/sqli-hidden-data.md"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="writeup-card"
+    >
 
         <div class="writeup-number">
             01
@@ -1702,7 +1814,7 @@ app.get("/writeups", (req, res) => {
             →
         </div>
 
-    </article>
+    </a>
 
 
     <article class="writeup-card muted">
