@@ -12,11 +12,10 @@ app.use(express.static(path.join(__dirname, "public")));
 const db = new sqlite3.Database("./yusifseclab.db");
 
 /* =========================
-   DATABASE INITIALIZATION
+   DATABASE
 ========================= */
 
 db.serialize(() => {
-
     db.run(`
         CREATE TABLE IF NOT EXISTS products (
             id INTEGER PRIMARY KEY,
@@ -30,47 +29,22 @@ db.serialize(() => {
         `SELECT COUNT(*) AS count FROM products`,
         [],
         (err, row) => {
-
             if (err) {
-                console.error("Database initialization error:", err.message);
+                console.error("Database error:", err.message);
                 return;
             }
 
             if (row.count === 0) {
-
                 const insert = db.prepare(`
                     INSERT INTO products
                     (id, name, category, released)
                     VALUES (?, ?, ?, ?)
                 `);
 
-                insert.run(
-                    1,
-                    "Red Team Notebook",
-                    "Gifts",
-                    1
-                );
-
-                insert.run(
-                    2,
-                    "Cybersecurity Hoodie",
-                    "Gifts",
-                    1
-                );
-
-                insert.run(
-                    3,
-                    "Secret Admin Toolkit",
-                    "Internal",
-                    0
-                );
-
-                insert.run(
-                    4,
-                    "Pentesting Lab Access",
-                    "Training",
-                    1
-                );
+                insert.run(1, "Red Team Notebook", "Gifts", 1);
+                insert.run(2, "Cybersecurity Hoodie", "Gifts", 1);
+                insert.run(3, "Secret Admin Toolkit", "Internal", 0);
+                insert.run(4, "Pentesting Lab Access", "Training", 1);
 
                 insert.finalize();
 
@@ -78,7 +52,6 @@ db.serialize(() => {
             }
         }
     );
-
 });
 
 
@@ -165,13 +138,11 @@ function escapeHtml(value) {
 
 
 function page(title, content) {
-
     return `
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -182,17 +153,13 @@ function page(title, content) {
     <title>${title} — YusifSecLab</title>
 
     <link rel="stylesheet" href="/style.css">
-
 </head>
 
 <body>
 
 <div class="bg-grid"></div>
-
 <div class="ambient ambient-one"></div>
-
 <div class="ambient ambient-two"></div>
-
 
 <nav class="navbar">
 
@@ -283,7 +250,6 @@ ${content}
 
 
 </body>
-
 </html>
 `;
 }
@@ -405,9 +371,7 @@ app.get("/", (req, res) => {
             <div class="console-title">
 
                 <span class="console-dot red"></span>
-
                 <span class="console-dot yellow"></span>
-
                 <span class="console-dot green"></span>
 
                 <span class="console-name">
@@ -441,12 +405,12 @@ app.get("/", (req, res) => {
 
 
             <div class="terminal-output success">
-                ✓ 80/tcp   open   http
+                ✓ 80/tcp open http
             </div>
 
 
             <div class="terminal-output success">
-                ✓ 3000/tcp open   node
+                ✓ 3000/tcp open node
             </div>
 
 
@@ -468,32 +432,22 @@ app.get("/", (req, res) => {
 
 
             <div class="scan-bar">
-
                 <span></span>
-
             </div>
 
 
             <div class="terminal-output warning">
-
                 ! SQL Injection surface detected
-
             </div>
 
 
             <div class="terminal-output success">
-
                 ✓ Target ready for testing
-
             </div>
 
 
             <div class="cursor-line">
-
-                <span>
-                    █
-                </span>
-
+                <span>█</span>
             </div>
 
         </div>
@@ -501,21 +455,10 @@ app.get("/", (req, res) => {
 
         <div class="console-footer">
 
-            <span>
-                HTTP
-            </span>
-
-            <span>
-                SQLITE
-            </span>
-
-            <span>
-                LINUX
-            </span>
-
-            <span>
-                RED TEAM
-            </span>
+            <span>HTTP</span>
+            <span>SQLITE</span>
+            <span>LINUX</span>
+            <span>RED TEAM</span>
 
         </div>
 
@@ -570,7 +513,7 @@ app.get("/", (req, res) => {
                 to expose hidden information.
             </p>
 
-            <a href="/labs/sqli">
+            <a href="/labs/database">
                 LAUNCH →
             </a>
 
@@ -666,23 +609,13 @@ app.get("/", (req, res) => {
 
         <div class="training-steps">
 
-
             <div class="path-step active">
 
-                <span>
-                    01
-                </span>
+                <span>01</span>
 
                 <div>
-
-                    <strong>
-                        RECON
-                    </strong>
-
-                    <small>
-                        Map the attack surface
-                    </small>
-
+                    <strong>RECON</strong>
+                    <small>Map the attack surface</small>
                 </div>
 
             </div>
@@ -693,20 +626,11 @@ app.get("/", (req, res) => {
 
             <div class="path-step">
 
-                <span>
-                    02
-                </span>
+                <span>02</span>
 
                 <div>
-
-                    <strong>
-                        ANALYZE
-                    </strong>
-
-                    <small>
-                        Understand requests
-                    </small>
-
+                    <strong>ANALYZE</strong>
+                    <small>Understand requests</small>
                 </div>
 
             </div>
@@ -717,20 +641,11 @@ app.get("/", (req, res) => {
 
             <div class="path-step">
 
-                <span>
-                    03
-                </span>
+                <span>03</span>
 
                 <div>
-
-                    <strong>
-                        EXPLOIT
-                    </strong>
-
-                    <small>
-                        Validate the weakness
-                    </small>
-
+                    <strong>EXPLOIT</strong>
+                    <small>Validate the weakness</small>
                 </div>
 
             </div>
@@ -741,20 +656,11 @@ app.get("/", (req, res) => {
 
             <div class="path-step">
 
-                <span>
-                    04
-                </span>
+                <span>04</span>
 
                 <div>
-
-                    <strong>
-                        REPORT
-                    </strong>
-
-                    <small>
-                        Document the finding
-                    </small>
-
+                    <strong>REPORT</strong>
+                    <small>Document the finding</small>
                 </div>
 
             </div>
@@ -780,7 +686,13 @@ app.get("/labs", (req, res) => {
 
         const locked = lab.status === "LOCKED";
 
+        const labUrl =
+            lab.id === "sqli"
+                ? "/labs/database"
+                : `/labs/${lab.id}`;
+
         return `
+
         <article class="lab-card ${locked ? "locked" : ""}">
 
             <div class="lab-card-top">
@@ -844,7 +756,7 @@ app.get("/labs", (req, res) => {
                     `
                     : `
                     <a
-                        href="/labs/${lab.id}"
+                        href="${labUrl}"
                         class="launch-link"
                     >
                         LAUNCH →
@@ -855,6 +767,7 @@ app.get("/labs", (req, res) => {
             </div>
 
         </article>
+
         `;
 
     }).join("");
@@ -972,14 +885,15 @@ app.get("/labs", (req, res) => {
    SQL INJECTION LAB
 ========================= */
 
-app.get("/labs/sqli", (req, res) => {
+app.get("/labs/database", (req, res) => {
 
     const category = req.query.category || "Gifts";
 
 
     /*
-        INTENTIONALLY VULNERABLE QUERY
-        DO NOT PARAMETERIZE THIS LAB
+        INTENTIONALLY VULNERABLE LAB
+        The parameter is deliberately inserted
+        into the SQL query without parameterization.
     */
 
     const query = `
@@ -1014,6 +928,7 @@ app.get("/labs/sqli", (req, res) => {
 
         }
 
+
         else if (rows.length === 0) {
 
             resultHtml = `
@@ -1037,6 +952,7 @@ app.get("/labs/sqli", (req, res) => {
             `;
 
         }
+
 
         else {
 
@@ -1113,7 +1029,7 @@ app.get("/labs/sqli", (req, res) => {
     <div>
 
         <div class="breadcrumb">
-            LABS / 01 / SQL INJECTION
+            LABS / 01 / DATABASE INJECTION
         </div>
 
 
@@ -1186,7 +1102,7 @@ app.get("/labs/sqli", (req, res) => {
             </span>
 
             <code>
-                /labs/sqli?category=Gifts
+                /labs/database?category=Gifts
             </code>
 
         </div>
@@ -1194,7 +1110,7 @@ app.get("/labs/sqli", (req, res) => {
 
         <form
             method="GET"
-            action="/labs/sqli"
+            action="/labs/database"
             class="attack-form"
         >
 
@@ -1278,10 +1194,8 @@ app.get("/labs/sqli", (req, res) => {
             </span>
 
             <strong>
-
                 Make the application return the
                 hidden <em>Secret Admin Toolkit</em>.
-
             </strong>
 
         </div>
@@ -1357,10 +1271,8 @@ app.get("/labs/sqli", (req, res) => {
 
 
             <p>
-
                 Think about how the value inside the
                 category parameter reaches the SQL query.
-
             </p>
 
         </div>
@@ -1483,26 +1395,26 @@ app.get("/labs/:id", (req, res) => {
         return res.status(404).send(
             page("404", `
 
-                <section class="error-page">
+<section class="error-page">
 
-                    <span>
-                        404
-                    </span>
+    <span>
+        404
+    </span>
 
-                    <h1>
-                        Lab not found.
-                    </h1>
+    <h1>
+        Lab not found.
+    </h1>
 
-                    <a
-                        href="/labs"
-                        class="btn btn-primary"
-                    >
-                        BACK TO LABS
-                    </a>
+    <a
+        href="/labs"
+        class="btn btn-primary"
+    >
+        BACK TO LABS
+    </a>
 
-                </section>
+</section>
 
-            `)
+`)
         );
 
     }
@@ -1510,9 +1422,7 @@ app.get("/labs/:id", (req, res) => {
 
     if (lab.id === "sqli") {
 
-        return res.redirect(
-            "/labs/sqli"
-        );
+        return res.redirect("/labs/database");
 
     }
 
@@ -1604,12 +1514,9 @@ app.get("/learning", (req, res) => {
 
 <section class="learning-grid">
 
-
     <div class="learning-card">
 
-        <span>
-            01
-        </span>
+        <span>01</span>
 
         <h2>
             HTTP Fundamentals
@@ -1625,9 +1532,7 @@ app.get("/learning", (req, res) => {
 
     <div class="learning-card">
 
-        <span>
-            02
-        </span>
+        <span>02</span>
 
         <h2>
             Web Reconnaissance
@@ -1643,9 +1548,7 @@ app.get("/learning", (req, res) => {
 
     <div class="learning-card">
 
-        <span>
-            03
-        </span>
+        <span>03</span>
 
         <h2>
             OWASP Top 10
@@ -1661,9 +1564,7 @@ app.get("/learning", (req, res) => {
 
     <div class="learning-card">
 
-        <span>
-            04
-        </span>
+        <span>04</span>
 
         <h2>
             Burp Suite
@@ -1724,7 +1625,6 @@ app.get("/writeups", (req, res) => {
 
 
 <section class="writeup-list">
-
 
     <article class="writeup-card">
 
@@ -1792,7 +1692,6 @@ app.get("/writeups", (req, res) => {
 
     </article>
 
-
 </section>
 
 `));
@@ -1841,7 +1740,6 @@ app.get("/about", (req, res) => {
 
 
     <div class="about-grid">
-
 
         <div>
 
@@ -1955,7 +1853,7 @@ app.listen(PORT, "0.0.0.0", () => {
     console.log("======================================");
     console.log(`   Port: ${PORT}`);
     console.log("   Database: SQLite");
-    console.log("   SQLi Lab: ACTIVE");
+    console.log("   SQL Injection Lab: ACTIVE");
     console.log("======================================");
     console.log("");
 
