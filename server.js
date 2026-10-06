@@ -889,7 +889,6 @@ app.get("/labs/database", (req, res) => {
 
     const category = req.query.category || "Gifts";
 
-
     /*
         INTENTIONALLY VULNERABLE LAB
         The parameter is deliberately inserted
@@ -902,8 +901,16 @@ app.get("/labs/database", (req, res) => {
         WHERE category = '${category}'
     `;
 
+    const flag =
+        "YSL{SQL_INJECTION_HIDDEN_DATA_RETRIEVED}";
 
     db.all(query, [], (err, rows) => {
+
+        const labSolved =
+            !err &&
+            rows.some(
+                row => row.name === "Secret Admin Toolkit"
+            );
 
         let resultHtml = "";
 
@@ -957,6 +964,37 @@ app.get("/labs/database", (req, res) => {
         else {
 
             resultHtml = `
+
+                ${
+                    labSolved
+                    ? `
+                    <div class="lab-solved">
+
+                        <div class="solved-icon">
+                            ✓
+                        </div>
+
+                        <div class="solved-content">
+
+                            <strong>
+                                LAB SOLVED
+                            </strong>
+
+                            <span>
+                                SQL Injection vulnerability successfully exploited.
+                            </span>
+
+                            <code>
+                                ${flag}
+                            </code>
+
+                        </div>
+
+                    </div>
+                    `
+                    : ""
+                }
+
 
                 <div class="result-count">
 
@@ -1170,7 +1208,7 @@ app.get("/labs/database", (req, res) => {
             </span>
 
             <span class="mission-status">
-                IN PROGRESS
+                ${labSolved ? "SOLVED" : "IN PROGRESS"}
             </span>
 
         </div>
@@ -1194,8 +1232,11 @@ app.get("/labs/database", (req, res) => {
             </span>
 
             <strong>
-                Make the application return the
-                hidden <em>Secret Admin Toolkit</em>.
+                ${
+                    labSolved
+                    ? "✓ Hidden Secret Admin Toolkit retrieved successfully."
+                    : "Make the application return the hidden Secret Admin Toolkit."
+                }
             </strong>
 
         </div>
@@ -1281,18 +1322,22 @@ app.get("/labs/database", (req, res) => {
         <div class="lab-objective-status">
 
             <div class="status-icon">
-                ⌁
+                ${labSolved ? "✓" : "⌁"}
             </div>
 
 
             <div>
 
                 <strong>
-                    ATTACK SURFACE READY
+                    ${labSolved ? "LAB SOLVED" : "ATTACK SURFACE READY"}
                 </strong>
 
                 <span>
-                    Parameter is controllable
+                    ${
+                        labSolved
+                        ? "Hidden data successfully retrieved"
+                        : "Parameter is controllable"
+                    }
                 </span>
 
             </div>
